@@ -1,4 +1,4 @@
-package main
+package golua
 
 //struct lua_Debug {
 //int event;

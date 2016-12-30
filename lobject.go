@@ -1,4 +1,4 @@
-package main
+package golua
 
 type lu_byte int8
 
