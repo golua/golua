@@ -7,3 +7,11 @@ type GCObject struct {
 	tt     lu_byte
 	marked lu_byte
 }
+
+type Value interface {
+}
+
+type TValue struct {
+	value_ Value
+	tt_ int
+}

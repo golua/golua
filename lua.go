@@ -1,22 +1,40 @@
 package golua
 
-//struct lua_Debug {
-//int event;
-//const char *name;	/* (n) */
-//const char *namewhat;	/* (n) 'global', 'local', 'field', 'method' */
-//const char *what;	/* (S) 'Lua', 'C', 'main', 'tail' */
-//const char *source;	/* (S) */
-//int currentline;	/* (l) */
-//int linedefined;	/* (S) */
-//int lastlinedefined;	/* (S) */
-//unsigned char nups;	/* (u) number of upvalues */
-//unsigned char nparams;/* (u) number of parameters */
-//char isvararg;        /* (u) */
-//char istailcall;	/* (t) */
-//char short_src[LUA_IDSIZE]; /* (S) */
-///* private part */
-//struct CallInfo *i_ci;  /* active function */
-//};
+/* thread status */
+const (
+	LUA_OK        = 0
+	LUA_YIELD     = 1
+	LUA_ERRRUN    = 2
+	LUA_ERRSYNTAX = 3
+	LUA_ERRMEM    = 4
+	LUA_ERRGCMM   = 5
+	LUA_ERRERR    = 6
+)
+
+type Lua_State struct {
+	nci           uint16        /* number of items in 'ci' list */
+	status        lu_byte       /* status */
+	top           StkId         /* first free slot in the stack */
+	// l_G           *global_State /* l_G */
+	// ci            *CallInfo     /* call info for current function */
+	// oldpc         *Instruction  /* last pc traced */
+	// stack_last    StkId         /* last free slot in the stack */
+	// stack         StkId         /* stack base */
+	// openupval     *UpVal        /* list of open upvalues in this stack */
+	// gclist        *GCObject     /* list of threads with open upvalues */
+	twups         *Lua_State    /* list of threads with open upvalues */
+	// errorjmp      *lua_longjmp  /* current error recover point */
+	// base_ci       CallInfo      /* CallInfo for first level (C calling Lua) */
+	// hook          lua_Hook      /* hook */
+	// errfunc       ptrdiff_t     /* current error handling function (stack index) */
+	stacksize     int           /* stacksize */
+	basehookcount int           /* basehookcount */
+	hookcount     int           /* hookcount */
+	nny           uint16        /* number of non-yieldable calls in stack */
+	nCcalls       uint16        /* number of nested C calls */
+	// hookmask      l_signalT     /* hookmask */
+	allowhook     lu_byte       /* allowhook */
+}
 
 /*
 ** basic types
@@ -35,17 +53,6 @@ const (
 	LUA_TTHREAD        = 8
 
 	LUA_NUMTAGS = 9
-)
-
-/* thread status */
-const (
-	LUA_OK        = 0
-	LUA_YIELD     = 1
-	LUA_ERRRUN    = 2
-	LUA_ERRSYNTAX = 3
-	LUA_ERRMEM    = 4
-	LUA_ERRGCMM   = 5
-	LUA_ERRERR    = 6
 )
 
 /*
@@ -91,7 +98,7 @@ type LuaDebug struct {
 
 /*
 ** basic stack manipulation
-*/
+ */
 //LUA_API int   (lua_absindex) (lua_State *L, int idx);
 //LUA_API int   (lua_gettop) (lua_State *L);
 //LUA_API void  (lua_settop) (lua_State *L, int idx);
@@ -102,9 +109,9 @@ type LuaDebug struct {
 //
 //LUA_API void  (lua_xmove) (lua_State *from, lua_State *to, int n);
 
-func Lua_absindex(L *interface{},idx int) int {
+func Lua_absindex(L *interface{}, idx int) int {
 	//TODO
-	return 	idx
+	return idx
 }
 
 func main() {
